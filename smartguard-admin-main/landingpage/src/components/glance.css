@@ -1,0 +1,128 @@
+.glance-wrapper {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 100vh;
+  background: #fff;
+  padding: 40px 0;
+  gap: 48px;
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+.glance-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 400px;
+  min-height: 400px;
+  flex: 1 1 0;
+}
+
+.glance-video {
+  width: 850px;
+  height: 690px;
+  object-fit: contain;
+  background: transparent;
+  z-index: 2;
+  border: none;
+  position: relative;
+}
+
+.glance-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.glance-right h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #222;
+}
+
+.glance-right p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 24px;
+}
+
+.glance-right-alt {
+  background: #f7fbff;
+  border-radius: 24px;
+  padding: 32px 36px;
+  box-shadow: 0 2px 16px rgba(0, 123, 255, 0.06);
+  max-width: 520px;
+  min-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1.1 1 0;
+}
+
+.glance-title-alt {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #1a73e8;
+  margin-bottom: 18px;
+  letter-spacing: -1px;
+}
+
+.glance-desc-alt {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.glance-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.glance-feature-list li {
+  font-size: 1.08rem;
+  color: #222;
+  background: #eaf6fe;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 6px rgba(26, 115, 232, 0.04);
+  transition: background 0.2s, color 0.2s;
+  min-height: 56px;
+}
+
+.glance-feature-list li:hover {
+  background: #d6f5e6;
+  color: #1a73e8;
+}
+
+.glance-feature-icon {
+  font-size: 1.5rem;
+  margin-right: 8px;
+}
+
+.glance-left-title {
+  position: relative;
+  z-index: 3;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 18px;
+  margin-top: 32px;
+  letter-spacing: 0.5px;
+  text-shadow: none;
+  text-align: center;
+  width: 100%;
+}

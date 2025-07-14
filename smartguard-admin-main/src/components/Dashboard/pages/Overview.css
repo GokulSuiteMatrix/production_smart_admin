@@ -1,0 +1,180 @@
+/* Custom Scrollbar Styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Live dot animation */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.live-dot {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Activity item hover effect */
+.activity-item {
+  transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+  background-color: #f9fafb;
+}
+
+/* Activity tag styles */
+.activity-tag {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+/* Activity Card Hover Effect */
+.activity-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.activity-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* For the vertical timeline line */
+.position-absolute.top-0.start-4 {
+  left: 32px !important;
+  width: 2px !important;
+  background: #e9ecef !important;
+  height: 100% !important;
+  z-index: 0 !important;
+}
+
+.flex-grow-1.overflow-auto::-webkit-scrollbar {
+  width: 6px;
+}
+.flex-grow-1.overflow-auto::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 3px;
+}
+
+.card-hover:hover {
+  box-shadow: 0 8px 32px rgba(56, 189, 248, 0.12), 0 1.5px 6px rgba(0,0,0,0.04);
+  transform: translateY(-2px) scale(1.02);
+} 
+
+.overview-header {
+  /* No special positioning needed, just at the top */
+  background: #fff;
+  z-index: 2;
+  padding-bottom: 0.5rem;
+} 
+
+.overview-header-fixed {
+  position: fixed;
+  top: 76px; /* navbar height */
+  left: 60px; /* collapsed sidebar */
+  width: calc(100% - 60px);
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  padding: 18px 32px 10px 32px;
+  transition: left 0.2s, width 0.2s;
+}
+
+/* When sidebar is expanded */
+.sidebar-expanded .overview-header-fixed {
+  left: 220px;
+  width: calc(100% - 220px);
+} 
+
+/* Advanced Table Styles */
+.advanced-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.advanced-table {
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.advanced-table thead th {
+  background: #f8f9fa;
+  border: none;
+  padding: 16px 12px;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.advanced-table tbody td {
+  border: none;
+  padding: 16px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.advanced-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.advanced-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Cursor pointer for clickable rows */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Sticky header for tables */
+.sticky-top {
+  position: sticky;
+  top: 200px;
+  z-index: 10;
+  background: #f8f9fa;
+}
+
+/* Badge improvements */
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Table row animations */
+.advanced-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.advanced-table tbody tr:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+} 

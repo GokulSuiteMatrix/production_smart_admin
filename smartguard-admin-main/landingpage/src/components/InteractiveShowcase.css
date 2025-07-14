@@ -1,0 +1,255 @@
+.interactive-showcase-section {
+  padding: 5rem 0;
+  background-color: #f8fafc;
+}
+
+.showcase-title-block {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.showcase-title-block h2 {
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.showcase-title-block p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  max-width: 100%;
+  margin: 0;
+}
+
+.showcase-visual-wrapper {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.showcase-gif {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    transform: scale(1.5);
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background-color: #fff;
+  color: #1f2937;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  z-index: 20;
+}
+
+.tooltip-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.tooltip-description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 0;
+}
+
+.showcase-content-block {
+  padding-left: 8rem;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  background-color: #fff;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-list li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.feature-list h5 {
+  font-weight: 700;
+  color: #6366f1;
+  margin-bottom: 0.25rem;
+}
+
+.feature-list p {
+  margin-bottom: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 991px) {
+  .showcase-content-block {
+    padding-left: 0;
+    margin-top: 3rem;
+  }
+}
+
+.concerns-section {
+  padding: 5rem 0 0 0;
+  background-color: #ffffff;
+}
+
+.concerns-title-block {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.concerns-title-block h2 {
+  font-weight: 700;
+  font-size: 2.7rem;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.concerns-title-block p {
+  font-size: 1.3rem;
+  color: #6b7280;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.concerns-visual-wrapper {
+  text-align: center;
+  transform: translateX(-40px);
+}
+
+.concerns-gif {
+  max-width: 105%;
+  height: auto;
+  border-radius: 1.5rem;
+ 
+}
+
+.concerns-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.25rem;
+  padding-left: 2.5rem;
+}
+
+.concern-card {
+  background: none;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  transition: none;
+}
+
+.concern-card-content {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #2c3e50;
+  background: none;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.concern-card-content:focus, .concern-card-content:hover {
+  color: #6d28d9;
+  outline: none;
+}
+
+.concern-card-desc {
+  font-size: 0.98rem;
+  color: #555;
+  margin: 0.2rem 0 0.7rem 2.2rem;
+  padding-left: 0.2rem;
+  border-left: 2px solid #e0c3fc;
+  opacity: 1;
+  max-height: 200px;
+  transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+}
+
+.concern-card:not(.open) .concern-card-desc {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.concern-card-arrow {
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+
+.concern-card.open .concern-card-arrow {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 767px) {
+  .concerns-grid {
+    grid-template-columns: 1fr;
+  }
+  .concerns-visual-wrapper {
+    margin-bottom: 3rem;
+  }
+}
+
+.concerns-gradient-title {
+  background: linear-gradient(90deg, #560ad1 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.concerns-title {
+  color: #111;
+  font-weight: 700;
+  font-size: 2.7rem;
+  line-height: 1.15;
+}
+
+.gradientt-text {
+  background: linear-gradient(90deg, #ff9800 0%, #ff3d7f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+} 
