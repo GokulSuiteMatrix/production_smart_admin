@@ -1,3 +1,5 @@
+
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -91,6 +93,10 @@ const Subscriptions = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [timePeriod, setTimePeriod] = useState("yearly");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalSubscriptions, setTotalSubscriptions] = useState(0);
 
   const handlePaymentChange = (field, value) => {
     setPaymentDetails(prev => ({
@@ -118,14 +124,27 @@ const Subscriptions = () => {
   }
 
   useEffect(() => {
-    fetchSubscriptions()
+    setLoading(true);
+    fetchSubscriptions({
+      page,
+      limit,
+      timePeriod,
+      startDate: timePeriod === 'custom' && startDate ? startDate.toISOString().split('T')[0] : undefined,
+      endDate: timePeriod === 'custom' && endDate ? endDate.toISOString().split('T')[0] : undefined,
+    })
       .then(data => {
-        console.log("Subscriptions from API:", data);
-        setSubscriptions(data);
+        setSubscriptions(data.subscriptions || []);
+        if (data.pagination) {
+          setTotalPages(data.pagination.total_pages);
+          setTotalSubscriptions(data.pagination.total);
+        } else {
+          setTotalPages(1);
+          setTotalSubscriptions(data.subscriptions ? data.subscriptions.length : 0);
+        }
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [page, limit, timePeriod, startDate, endDate]);
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -138,6 +157,11 @@ const Subscriptions = () => {
       .catch(() => setSearchResults([]))
       .finally(() => setSearchLoading(false));
   }, [searchTerm]);
+
+  // Add a customStartDate and customEndDate for custom period
+  useEffect(() => {
+    setPage(1); // Reset to first page when filters change
+  }, [timePeriod, startDate, endDate]);
 
   // Helper to check if a date is within the selected time period
   function isWithinTimePeriod(dateStr) {
@@ -173,14 +197,15 @@ const Subscriptions = () => {
         } else if (!searchLoading) {
           matchesSearch =
             (sub.family_name && sub.family_name.toLowerCase().includes(searchTermLower)) ||
-            (sub.plan?.name && sub.plan.name.toLowerCase().includes(searchTermLower)) ||
+            (sub.plan && sub.plan.name && sub.plan.name.toLowerCase().includes(searchTermLower)) ||
             (sub.status && sub.status.toLowerCase().includes(searchTermLower)) ||
             (sub.payment_method && sub.payment_method.toLowerCase().includes(searchTermLower));
         }
       }
 
-      // Plan filter
-      let matchesPlan = selectedPlan === "all" || (sub.plan?.name && sub.plan.name.toLowerCase() === selectedPlan);
+      // Plan filter (null/empty plan names are treated as 'N/A')
+      let planName = sub.plan && sub.plan.name ? sub.plan.name.toLowerCase() : "n/a";
+      let matchesPlan = selectedPlan === "all" || planName === selectedPlan;
 
       // Date range filter
       let matchesDateRange = true;
@@ -411,14 +436,11 @@ const Subscriptions = () => {
   return (
     <div className="fade-in">
       {/* Fixed Header: title, description, and filter bar (if any) */}
-      <div className="overview-header-fixed">
-        
-        {/* If you have a filter bar, include it here */}
-      </div>
-      <div style={{ marginTop: 50}} />
+      
+      
       {view === "list" && (
         <>
-            
+         <div className=" shadow-sm mt-5 mb-0 bg-white   rounded-4 p-2 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3" >
       <div className="mb-3 d-flex align-items-center gap-3">
         <label className="mb-0 fw-bold" htmlFor="filter">Filter</label>
                       <select
@@ -429,11 +451,52 @@ const Subscriptions = () => {
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
           <option value="yearly">Yearly</option>
+          <option value="custom">Custom Date</option>
                       </select>
+        {timePeriod === 'custom' && (
+          <DatePicker
+            selectsRange
+            startDate={startDate}
+            endDate={endDate}
+            onChange={update => setDateRange(update)}
+            isClearable={true}
+            className="form-control form-control-sm w-auto"
+            placeholderText="Select date range"
+            maxDate={new Date()}
+          />
+        )}
       </div>
-
+      {/* Status/Loading */}
+      <div className="d-flex align-items-center gap-2 ms-2">
+        {loading ? (
+          <div className="d-flex align-items-center gap-2">
+            <div className="spinner-border spinner-border-sm text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <span className="text-muted small">Updating data...</span>
+          </div>
+        ) : (
+          <>
+            {timePeriod === 'custom' && startDate && endDate ? (
+              <div className="text-muted small">
+                Showing data from <b>{startDate.toLocaleDateString()}</b> to <b>{endDate.toLocaleDateString()}</b>
+              </div>
+            ) : (
+              <div className="badge bg-primary text-white px-3 py-2">
+                <Calendar size={14} className="me-1" />
+                {timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1)} View
+              </div>
+            )}
+          </>
+        )}
+      </div>
+        
+        {/* If you have a filter bar, include it here */}
+      </div>   
+      
+      <div style={{ marginTop: 20}} />
       {/* Statistics Cards */}
-      <div className="row g-3 mb-4">
+      <div className="row g-3 mb-4 ">
         <div className="col-md-3">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card h-100 border-0 shadow-lg" style={{ background: '#22c55e', color: '#fff', borderRadius: 16 }}>
             <div className="card-body">
@@ -584,6 +647,7 @@ const Subscriptions = () => {
                   placeholder="Search subscriptions..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') e.preventDefault(); }}
                 />
                 {searchTerm && (
                   <button
@@ -699,10 +763,48 @@ const Subscriptions = () => {
           </div>
         </div>
       </motion.div>
+      <div className="d-flex justify-content-between align-items-center mt-4 p-3 bg-white rounded-4 shadow-sm">
+        <div className="d-flex align-items-center gap-3">
+          <label className="me-2 mb-0 small">Show</label>
+          <select
+            className="form-select form-select-sm w-auto"
+            value={limit}
+            onChange={e => {
+              setLimit(Number(e.target.value));
+              setPage(1); // Reset to first page when limit changes
+            }}
+          >
+            {[5, 10, 20, 50].map(size => (
+              <option key={size} value={size}>{size}</option>
+            ))}
+          </select>
+          <span className="ms-2 small">per page</span>
+        </div>
+        <div className="text-muted small">
+          Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, totalSubscriptions)} of {totalSubscriptions} subscriptions
+        </div>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            className="btn btn-outline-primary btn-sm"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Previous
+          </button>
+          <span className="mx-2">{page}</span>
+          <button
+            className="btn btn-outline-primary btn-sm"
+            disabled={page >= totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
+      </div>
         </>
       )}
       {view === "details" && selectedSubscription && (
-        <div>
+        <div className="mt-5">
           <button
             className="btn btn-outline-secondary mb-3"
             onClick={() => setView("list")}

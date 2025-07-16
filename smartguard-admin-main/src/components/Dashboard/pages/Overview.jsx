@@ -1,3 +1,6 @@
+
+
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
@@ -52,6 +55,8 @@ const Overview = () => {
   const [growthRateLoading, setGrowthRateLoading] = useState(true);
   const [growthRateError, setGrowthRateError] = useState(null);
 
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [subscriptionError, setSubscriptionError] = useState(null);
   // State for recent activity
   const [recentActivity, setRecentActivity] = useState([]);
   const [recentActivityLoading, setRecentActivityLoading] = useState(true);
@@ -98,12 +103,24 @@ const Overview = () => {
     return overviewFilter;
   };
 
+  // Helper function to get the time period and dates for API calls
+  const getTimePeriodAndDates = () => {
+    if (overviewFilter === 'custom' && customStartDate && customEndDate) {
+      return {
+        period: 'custom',
+        start_date: customStartDate.toISOString().split('T')[0],
+        end_date: customEndDate.toISOString().split('T')[0],
+      };
+    }
+    return { period: overviewFilter };
+  };
+
   // Fetch dashboard stats
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const timePeriod = getTimePeriodForAPI();
-      const data = await fetchDashboardStats(timePeriod);
+      const { period, start_date, end_date } = getTimePeriodAndDates();
+      const data = await fetchDashboardStats(period, start_date, end_date);
       // Transform API data to match the stats format
       const transformedStats = [
         {
@@ -152,8 +169,8 @@ const Overview = () => {
   const getGrowthRate = async () => {
     try {
       setGrowthRateLoading(true);
-      const timePeriod = getTimePeriodForAPI();
-      const data = await fetchGrowthRate(timePeriod);
+      const { period, start_date, end_date } = getTimePeriodAndDates();
+      const data = await fetchGrowthRate(period, start_date, end_date);
       setGrowthRateData(data);
     } catch (err) {
       setGrowthRateError(err.message);
@@ -166,6 +183,7 @@ const Overview = () => {
   const getRecentActivity = async () => {
     try {
       setRecentActivityLoading(true);
+      // No custom date support for recent activity in API, keep as is
       const timePeriod = getTimePeriodForAPI();
       const data = await fetchRecentActivity(timePeriod);
       setRecentActivity(data.activities || data);
@@ -180,8 +198,8 @@ const Overview = () => {
   const getFamilyGrowth = async () => {
     try {
       setFamilyGrowthLoading(true);
-      const timePeriod = getTimePeriodForAPI();
-      const data = await fetchFamilyGrowth(timePeriod);
+      const { period, start_date, end_date } = getTimePeriodAndDates();
+      const data = await fetchFamilyGrowth(period, start_date, end_date);
       setFamilyGrowthData(data);
     } catch (err) {
       setFamilyGrowthError(err.message);
@@ -194,8 +212,8 @@ const Overview = () => {
   const getSubscriptionDistribution = async () => {
     try {
       setSubscriptionLoading(true);
-      const timePeriod = getTimePeriodForAPI();
-      const data = await fetchSubscriptionDistribution(timePeriod);
+      const { period, start_date, end_date } = getTimePeriodAndDates();
+      const data = await fetchSubscriptionDistribution(period, start_date, end_date);
       setSubscriptionData(data);
     } catch (err) {
       setSubscriptionError(err.message);
@@ -442,7 +460,7 @@ const Overview = () => {
 
   return (
     <div className="fade-in">
-      <div className="overview-header-fixed shadow-sm pt-5">
+      <div className="header-fixed shadow-sm mt-5">
         
         <div className="d-flex flex-wrap align-items-center justify-content-between  p-3 bg-white rounded-4" style={{ gap: 16 }}>
           <div className="d-flex align-items-center gap-3 flex-wrap">
@@ -503,7 +521,7 @@ const Overview = () => {
           </div>
         </div>
       </div>
-      <div style={{ marginTop: 150 }} /> {/* 76px (navbar) + 110px (dashboard header) */}
+      <div style={{ marginTop: 20 }} /> {/* 76px (navbar) + 110px (dashboard header) */}
 
       {/* Statistics Cards */}
       <div className="row g-2 mb-3 align-items-stretch">

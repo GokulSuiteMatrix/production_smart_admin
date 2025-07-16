@@ -1,6 +1,9 @@
+
+
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 import {
@@ -30,6 +33,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Overview.css";
 
+function useEscapeKey(onEscape) {
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") onEscape();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onEscape]);
+}
 
 const TenantManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,6 +83,8 @@ const TenantManagement = () => {
   const [limit, setLimit] = useState(10); // or any default page size
   const [totalPages, setTotalPages] = useState(1);
   const [totalTenants, setTotalTenants] = useState(0);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [subscriptionError, setSubscriptionError] = useState(null);
 
   // Reset page when filters change
   useEffect(() => {
@@ -390,6 +404,19 @@ const TenantManagement = () => {
     return `${age - 5 + 1}`; // 1st grade at age 6, etc.
   }
 
+  // Add global close overlays handler
+  const closeAllOverlays = useCallback(() => {
+    setSelectedFamily(null);
+    setManagedDeviceFamily(null);
+    setIsEditing(false);
+  }, []);
+
+  // Use ESC to close overlays
+  useEscapeKey(() => {
+    if (selectedFamily || managedDeviceFamily) closeAllOverlays();
+  });
+
+  // Only after all hooks, do early returns:
   if (loading) return <div>Loading tenants...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -398,7 +425,7 @@ const TenantManagement = () => {
     console.log('Selected family:', selectedFamily);
     console.log('Children data:', childrenData);
     return (
-      <div className="fade-in">
+      <div className="fade-in mt-5">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div className="d-flex align-items-center">
             <button
@@ -828,14 +855,12 @@ const TenantManagement = () => {
   return (
     <div className="fade-in">
       {/* Fixed Header: title, description, and filter bar */}
-      <div className="overview-header-fixed shadow-sm pt-5 mb-0 ">
-       
-        
-        {/* Filter Bar */}
-        <div className="filter-bar-container bg-white rounded-4 p-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
-
+      <div className=" shadow-sm mt-5 mb-0">
+  {/* Filter Bar */}
+        <div className="filter-bar-container bg-white rounded-4 p-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+          
           {/* Right: Search */}
-        <div className="d-flex align-items-center gap-2" style={{ minWidth: 250 }}>
+          <div className="input-group" style={{ minWidth: 250, maxWidth: 300 }}>
             <span className="input-group-text bg-light border-0">
               <Search size={16} className="text-muted" />
             </span>
@@ -847,17 +872,16 @@ const TenantManagement = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
-              <button
-                className="btn btn-light border-0"
-                onClick={() => setSearchTerm("")}
-              >
+              <button className="btn btn-light border-0" onClick={() => setSearchTerm("")}>
                 <X size={16} className="text-muted" />
               </button>
             )}
           </div>
+
           {/* Left: Filters */}
           <div className="d-flex flex-wrap align-items-center gap-3">
             <label className="fw-bold mb-0 me-2" htmlFor="filter">Filter</label>
+
             <select
               className="form-select form-select-sm w-auto"
               value={timePeriod}
@@ -868,6 +892,7 @@ const TenantManagement = () => {
               <option value="yearly">Yearly</option>
               <option value="custom">Custom Date</option>
             </select>
+
             {timePeriod === 'custom' && (
               <DatePicker
                 selectsRange
@@ -880,6 +905,7 @@ const TenantManagement = () => {
                 maxDate={new Date()}
               />
             )}
+
             <select
               className="form-select form-select-sm w-auto"
               value={filterStatus}
@@ -890,6 +916,7 @@ const TenantManagement = () => {
               <option value="suspended">Suspended</option>
               <option value="inactive">Inactive</option>
             </select>
+
             {/* Status/Loading */}
             <div className="d-flex align-items-center gap-2 ms-2">
               {tableLoading ? (
@@ -915,13 +942,11 @@ const TenantManagement = () => {
               )}
             </div>
           </div>
-
-         
         </div>
-        
       </div>
+
       
-      <div style={{ marginTop: 150 }} /> {/* Adjust this value to match the new header height */}
+      <div style={{ marginTop: window.innerWidth < 600 ? 20 : 20 }} /> {/* Adjust this value to match the new header height */}
 
       {/* Summary Cards */}
       <div className="row mb-4" style={{ marginTop: 24 }}>
@@ -1379,7 +1404,27 @@ const TenantManagement = () => {
         </motion.div>
       )}
 
-
+      {/* Add global close overlays button (visible if any overlay is open) */}
+      {(selectedFamily || managedDeviceFamily) && (
+        <button
+          style={{
+            position: 'fixed',
+            top: 16,
+            right: 16,
+            zIndex: 2000,
+            background: '#ef4444',
+            color: 'white',
+            border: 'none',
+            borderRadius: 8,
+            padding: '8px 16px',
+            fontWeight: 600,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}
+          onClick={closeAllOverlays}
+        >
+          Close All Overlays
+        </button>
+      )}
 
       {/* Tenants Table */}
       <motion.div
@@ -1485,7 +1530,7 @@ const TenantManagement = () => {
                           </div>
                           <div>
                             <div className="fw-medium">{tenant.name || "No Name"}</div>
-                            <small className="text-muted">{tenant.familyCode || "N/A"}</small>
+                            {/* <small className="text-muted">{tenant.familyCode || "N/A"}</small> */}
                           </div>
                         </div>
                       </td>

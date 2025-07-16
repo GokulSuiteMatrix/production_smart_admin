@@ -20,14 +20,10 @@
 }
 
 .sidebar-label {
-  opacity: 0;
-  width: 0;
+  display: inline;
+  opacity: 1;
+  transition: opacity 0.2s;
   white-space: nowrap;
-  overflow: hidden;
-  transition: opacity 0.2s, width 0.2s;
-  color: #222;
-  font-size: 1rem;
-  
 }
 
 .sidebar-hover-expand:hover .sidebar-label {
