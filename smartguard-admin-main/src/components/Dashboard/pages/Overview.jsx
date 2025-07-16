@@ -1,6 +1,3 @@
-
-
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
@@ -170,6 +167,7 @@ const Overview = () => {
     try {
       setGrowthRateLoading(true);
       const { period, start_date, end_date } = getTimePeriodAndDates();
+      console.log('Fetching Growth Rate:', { period, start_date, end_date });
       const data = await fetchGrowthRate(period, start_date, end_date);
       setGrowthRateData(data);
     } catch (err) {
@@ -199,6 +197,7 @@ const Overview = () => {
     try {
       setFamilyGrowthLoading(true);
       const { period, start_date, end_date } = getTimePeriodAndDates();
+      console.log('Fetching Family Growth:', { period, start_date, end_date });
       const data = await fetchFamilyGrowth(period, start_date, end_date);
       setFamilyGrowthData(data);
     } catch (err) {
@@ -213,6 +212,7 @@ const Overview = () => {
     try {
       setSubscriptionLoading(true);
       const { period, start_date, end_date } = getTimePeriodAndDates();
+      console.log('Fetching Subscription Distribution:', { period, start_date, end_date });
       const data = await fetchSubscriptionDistribution(period, start_date, end_date);
       setSubscriptionData(data);
     } catch (err) {
